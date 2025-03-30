@@ -24,4 +24,43 @@ COPY --from=builder /home/perplexica/data ./data
 
 RUN mkdir /home/perplexica/uploads
 
+# Créer le script qui génère le config.toml
+RUN echo '#!/bin/bash\n\
+\n\
+# Générer config.toml à partir des variables d'\''environnement\n\
+cat > /home/perplexica/config.toml << EOF\n\
+[GENERAL]\n\
+SIMILARITY_MEASURE = "${SIMILARITY_MEASURE:-cosine}"\n\
+KEEP_ALIVE = "${KEEP_ALIVE:-5m}"\n\
+\n\
+[MODELS.OPENAI]\n\
+API_KEY = "${OPENAI:-}"\n\
+\n\
+[MODELS.GROQ]\n\
+API_KEY = "${GROQ_API_KEY:-}"\n\
+\n\
+[MODELS.ANTHROPIC]\n\
+API_KEY = "${ANTHROPIC_API_KEY:-}"\n\
+\n\
+[MODELS.GEMINI]\n\
+API_KEY = "${GEMINI_API_KEY:-}"\n\
+\n\
+[MODELS.CUSTOM_OPENAI]\n\
+API_KEY = "${CUSTOM_OPENAI_API_KEY:-}"\n\
+API_URL = "${CUSTOM_OPENAI_API_URL:-}"\n\
+MODEL_NAME = "${CUSTOM_OPENAI_MODEL_NAME:-}"\n\
+\n\
+[MODELS.OLLAMA]\n\
+API_URL = "${OLLAMA_API_URL:-}"\n\
+\n\
+[API_ENDPOINTS]\n\
+SEARXNG = "${SEARXNG_API_URL:-}"\n\
+EOF\n\
+\n\
+echo "Configuration générée. Démarrage de l'\''application..."\n\
+\n\
+
+RUN chmod +x /home/perplexica/start.sh
+
+ENTRYPOINT ["/home/perplexica/start.sh"]
 CMD ["node", "server.js"]
