@@ -55,10 +55,7 @@ API_URL = "${OLLAMA_API_URL:-}"\n\
 \n\
 [API_ENDPOINTS]\n\
 SEARXNG = "${SEARXNG_API_URL:-}"\n\
-EOF\n\
-\n\
-echo "Configuration générée. Démarrage de l'\''application..."\n\
-\n\
+EOF\n
 
 RUN chmod +x /home/perplexica/start.sh
 
